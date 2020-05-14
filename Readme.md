@@ -10,6 +10,8 @@ Laravel環境をDockerで構築する為の手順書
 
 -Nginx:1.17(nginx:1.17-alpine)
 
+-Laravel:6.*
+
 # ローカル環境の構築(Mac)
 
 ## PHPのバージョン更新
@@ -86,6 +88,67 @@ Composer version 1.10.4 2020-04-09 17:05:50
 
 # 開発環境構築
 
+## プロジェクト新規作成直後に必須の作業
+
+### laravel_dockerリポジトリのclone
+
+```shell-session
+$ git clone https://github.com/FumihiroMaejima/laravel_docker your_project
+```
+
+### masterブランチのチェックアウト
+
+デフォルトブランチがdevelopの為、masterブランチをチェックアウトする。
+
+```shell-session
+$ git checkout -b master remotes/origin/master
+```
+
+### 現在のremoteのURLの確認
+
+```shell-session
+$ git remote -v
+origin	https://github.com/FumihiroMaejima/laravel_docker (fetch)
+origin	https://github.com/FumihiroMaejima/laravel_docker (push)
+```
+
+
+### remoteリポジトリのURLの変更
+
+```shell-session
+$ git remote set-url origin https://github.com/Your_Name/your_project
+$ git remote -v
+origin	https://github.com/Your_Name/your_project (fetch)
+origin	https://github.com/Your_Name/your_project (push)
+```
+
+
+### masterとdevelopブランチをremoteにpushする。
+
+```shell-session
+$ git push origin master
+$ git push origin develop
+```
+
+### git-flowの初期化を行う。
+
+```shell-session
+$ git flow init
+```
+
+
+### env_exampleをコピペして.envを作る。
+APP_PORTは現状設定不要。
+nginxのポート設定は要注意が必要。
+
+### Laravel version7系のプロジェクトを用意する場合
+
+既存の「backend」ディレクトリをリネームして新しく作成する
+
+```shell-session
+$ composer create-project laravel/laravel=7.* --prefer-dist backend
+```
+
 ## 不要ファイルの削除
 
 ＊コンテナイメージの作り直し時も同様
@@ -97,7 +160,7 @@ $ docker-compose up -d
 
 ```
 
-## Laravelプロジェクトの新規作成
+## Laravelプロジェクトの作成(新規作成時)
 
 dockerコンテナとマウントする為の「backend」ディレクトリはローカルで作成する。
 「app」ディレクトリに移動してcomposerでプロジェクトを新規作成する。

@@ -51,7 +51,7 @@ nginx-t:
 nginx-reload:
 	docker-compose exec nginx ash -c 'nginx -s reload'
 
-nginx-reload:
+nginx-stop:
 	docker-compose exec nginx ash -c 'nginx -s stop'
 
 mysql:
