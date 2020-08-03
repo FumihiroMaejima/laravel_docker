@@ -49,6 +49,8 @@ services:
   node:
     build: ./node
     container_name: ${PROJECT_NAME}_node
+    depends_on:
+      - app
     ports:
       - "${NODE_APPLICATION_PORT}:${NODE_APPLICATION_PORT}"
 
