@@ -12,11 +12,20 @@ down-rmi:
 ps:
 	docker-compose ps
 
-migrate-fresh:
-	docker-compose exec app php artisan migrate:fresh
+migrate:
+	docker-compose exec app php artisan migrate
 
+# データベースから全テーブルをドロップし、その後migrateを行う
+migrate-fresh:
+	docker-compose exec app php artisan migrate:fresh --seed
+
+# 全部のデータベースマイグレーションを最初にロールバックし,その後migrateを行う
 migrate-refresh:
-	docker-compose exec app php artisan migrate:refresh
+	docker-compose exec app php artisan migrate:refresh --seed
+
+# migrationを全てロールバックする
+migrate-reset:
+	docker-compose exec app php artisan migrate:reset
 
 seed:
 	docker-compose exec app php artisan db:seed
@@ -43,7 +52,7 @@ phpcs:
 	docker-compose exec app vendor/bin/phpcs --standard=phpcs.xml --extensions=php .
 
 phpmd:
-	docker-compose exec app vendor/bin/phpmd . text ruleset.xml --suffixes php --exclude node_modules,resources,storage,vendor
+	docker-compose exec app vendor/bin/phpmd . text ruleset.xml --suffixes php --exclude node_modules,resources,storage,vendor,app/Console
 
 nginx-t:
 	docker-compose exec nginx ash -c 'nginx -t'
@@ -51,7 +60,7 @@ nginx-t:
 nginx-reload:
 	docker-compose exec nginx ash -c 'nginx -s reload'
 
-nginx-reload:
+nginx-stop:
 	docker-compose exec nginx ash -c 'nginx -s stop'
 
 mysql:
@@ -59,3 +68,6 @@ mysql:
 
 circleci:
 	cd app/backend && circleci build
+
+ci:
+	circleci build
