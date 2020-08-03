@@ -46,13 +46,16 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       TZ: "Asia/Tokyo"
 
-  node:
-    build: ./node
-    container_name: ${PROJECT_NAME}_node
-    depends_on:
-      - app
-    ports:
-      - "${NODE_APPLICATION_PORT}:${NODE_APPLICATION_PORT}"
+  # if you will use vue.js etc remove comment out.
+  # node:
+  #   build: ./node
+  #   container_name: ${PROJECT_NAME}_node
+  #   volumes:
+  #     - ./node/frontend:/frontend
+  #   depends_on:
+  #     - app
+  #   ports:
+  #     - "${NODE_APPLICATION_PORT}:${NODE_APPLICATION_PORT}"
 
   redis:
     image: redis:5.0-alpine
