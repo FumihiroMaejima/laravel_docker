@@ -1,0 +1,36 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.4
+        environment:
+          APP_ENV: circleci
+          APP_DEBUG: true
+          DB_CONNECTION: sqlite
+    working_directory: ~/application
+    steps:
+      - checkout
+      - run: echo 'Hello PHP!'
+      - run: echo 'This is application Environmental'
+      - run: echo 'apt install start'
+      - run: cd app/backend && cp .env.example .env
+      - run: cd app/backend && sudo apt-cache policy sqlite3 zlib1g-dev
+      - run: cd app/backend && sudo composer self-update
+      - run: cd app/backend && touch composer.json
+      - run: cd app/backend && touch composer.lock
+      - restore_cache:
+          keys:
+            - composer-v1-{{ checksum "app/backend/composer.lock" }}
+            - composer-v1-
+      - run: cd app/backend && composer install
+      - save_cache:
+          key: composer-v1-{{ checksum "app/backend/composer.lock" }}
+          paths:
+            - vendor
+      - run: echo 'Cache made.'
+      - run: cd app/backend && php artisan key:generate
+      - run: cd app/backend && vendor/bin/phpunit --testdox
+      # - run: vendor/bin/php-cs-fixer fix -v
+      - run: cd app/backend && vendor/bin/phpcs --standard=phpcs.xml --extensions=php .
+      - run: cd app/backend && vendor/bin/phpmd . text ruleset.xml --suffixes php --exclude node_modules,resources,storage,vendor,app/Console
+
